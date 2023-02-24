@@ -1,26 +1,26 @@
-### QuerrySpray
+# QuerrySpray
  Duplicate requests, get the fastest
 
  ## Recommendations
-# Weighing the impact / benefit
+### Weighing the impact / benefit
 <!-- TODO -->
-# Not getting banned
+### Not getting banned
 <!-- TODO -->
 
 ## Development purposes
 Using a volume to hold the app during development. The compilation is done when launching the docker run.
-# Docker Build
+### Docker Build
 docker build -t querryspray-env-dev-3 .
 
-# Docker Run
+### Docker Run
 docker run -p 8085:8085 -v /:/app querryspray-env-dev
 
 
 ## Production Purposes
 Using the app already built in the container
 
-# Docker Build
+### Docker Build
 <!-- TODO -->
 
-# Docker Run
+### Docker Run
 <!-- TODO -->
