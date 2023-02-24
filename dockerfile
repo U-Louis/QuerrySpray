@@ -2,12 +2,9 @@ FROM golang:1.20.1-alpine3.16
 
 WORKDIR /app
 
-COPY go.mod ./
-
-RUN go mod download
-
 COPY . .
 
-CMD ["go", "run", "main.go"]
+RUN go mod download
+RUN go mod tidy
 
-EXPOSE 8085
+ENTRYPOINT ["sh","./build.dev.sh"]
