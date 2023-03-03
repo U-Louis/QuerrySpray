@@ -10,5 +10,3 @@ go build main.go
 
 ## Run the new binary
 ./main
-
-echo "QuerySpray is ready to go!"
