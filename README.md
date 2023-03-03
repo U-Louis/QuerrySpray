@@ -1,11 +1,13 @@
 # QuerySpray
  Duplicate requests, get the fastest
 
+
  ## Recommendations
 ### Weighing the impact / benefit
 <!-- TODO -->
 ### Not getting banned
 <!-- TODO -->
+
 
 ## Development purposes
 Using a volume to hold the app during development. The compilation is done when launching the docker run.
@@ -18,10 +20,8 @@ docker build -t queryspray-env-dev .
 docker run -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null
 
 ### Refresh (might be a few secs)
-docker exec -it queryspray-dev sh ./build.dev.sh
+docker exec -it queryspray-dev sh ./build.dev.sh; docker container restart queryspray-dev
 
-### Refresh App
-./builder.dev.sh
 
 ## Production Purposes
 Using the app already built in the container
