@@ -28,32 +28,32 @@ func main() {
 
     r.POST("/spray", func(c *gin.Context) {
         var sprayable Sprayable
-    
+
         if err := c.BindJSON(&sprayable); err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
             return
         }
-    
+
         // Get the number of times to spray the request from the query parameter
         multipleStr := c.Query("multiple")
         if multipleStr == "" {
             c.JSON(http.StatusBadRequest, gin.H{"error": "Missing query parameter: multiple"})
             return
         }
-    
+
         multiple, err := parseMultiple(multipleStr)
         if err != nil {
             c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
             return
         }
-    
+
         // Create the HTTP request based on the sprayable object
         req, err := http.NewRequest(sprayable.Method, sprayable.Uri, bytes.NewBuffer([]byte(sprayable.Body)))
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
-    
+
         // Add headers to the HTTP request
         for _, header := range sprayable.Headers {
             parts := strings.Split(header, ":")
@@ -63,21 +63,18 @@ func main() {
             }
             req.Header.Add(parts[0], strings.TrimSpace(parts[1]))
         }
-    
+
         // Perform the HTTP request multiple times
         resp, err := performRequestMultipleTimes(http.DefaultClient, req, multiple)
         if err != nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
             return
         }
-    
+
         if resp == nil {
             c.JSON(http.StatusInternalServerError, gin.H{"error": "All requests failed"})
             return
         }
-    
-        // Return the first response received
-        defer resp.Body.Close()
 
 // Return the first response received
 body, err := ioutil.ReadAll(resp.Body)
@@ -87,13 +84,15 @@ if err != nil {
     c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
     return
 }
+defer resp.Body.Close() // close the response body here
+
 c.Data(http.StatusOK, "application/json", body)
 
-
-    })   
+    })
 
     r.Run(":8085")
 }
+
 
 func performRequestMultipleTimes(client *http.Client, req *http.Request, multiple int) (*http.Response, error) {
     log.Printf("Request: %s %s, headers=%v, body=%s", req.Method, req.URL.String(), req.Header, req.Body)
@@ -107,8 +106,15 @@ func performRequestMultipleTimes(client *http.Client, req *http.Request, multipl
     defer cancel()
 
     for i := 0; i < multiple; i++ {
+        // create a new request object for each request
+        newReq, err := http.NewRequest(req.Method, req.URL.String(), req.Body)
+        if err != nil {
+            return nil, err
+        }
+        newReq.Header = req.Header.Clone()
+
         go func() {
-            resp, err := performRequest(client, req.WithContext(ctx))
+            resp, err := performRequest(client, newReq.WithContext(ctx))
             if err != nil {
                 // If an error occurs, send it on the error channel
                 errorChan <- err
@@ -132,6 +138,7 @@ func performRequestMultipleTimes(client *http.Client, req *http.Request, multipl
     }
 }
 
+
 func parseMultiple(multipleStr string) (int, error) {
     multiple, err := strconv.Atoi(multipleStr)
     if err != nil {
@@ -145,7 +152,7 @@ func performRequest(client *http.Client, req *http.Request) (*http.Response, err
     if err != nil {
         return nil, err
     }
-    defer resp.Body.Close()
+    // defer resp.Body.Close()  // remove this line to avoid closing the response body here
     body, err := ioutil.ReadAll(resp.Body)
     if err != nil {
         return nil, err
@@ -153,3 +160,4 @@ func performRequest(client *http.Client, req *http.Request) (*http.Response, err
     log.Println(string(body))
     return resp, nil
 }
+
