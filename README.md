@@ -18,6 +18,7 @@ docker build -t queryspray-env-dev .
 ### Docker Run
 <!-- The -d & tail will keep the container running -->
 docker run -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null
+docker run --network host -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null
 
 ### Refresh (might be a few secs)
 docker exec -it queryspray-dev sh ./build.dev.sh; docker container restart queryspray-dev
