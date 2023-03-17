@@ -95,8 +95,6 @@ c.Data(http.StatusOK, "application/json", body)
 
 
 func performRequestMultipleTimes(client *http.Client, req *http.Request, multiple int) (*http.Response, error) {
-    log.Printf("Request: %s %s, headers=%v, body=%s", req.Method, req.URL.String(), req.Header, req.Body)
-
     // Use a channel to make the requests concurrently and wait for the first response
     responseChan := make(chan *http.Response, multiple)
     errorChan := make(chan error, 1)
@@ -107,6 +105,7 @@ func performRequestMultipleTimes(client *http.Client, req *http.Request, multipl
 
     for i := 0; i < multiple; i++ {
         // create a new request object for each request
+        log.Printf("Request: %s %s, headers=%v, body=%s", req.Method, req.URL.String(), req.Header, req.Body)
         newReq, err := http.NewRequest(req.Method, req.URL.String(), req.Body)
         if err != nil {
             return nil, err
@@ -129,8 +128,17 @@ func performRequestMultipleTimes(client *http.Client, req *http.Request, multipl
     // Wait for the first response or error
     select {
     case resp := <-responseChan:
-        log.Printf("Response: status=%d, headers=%v, body=%s", resp.StatusCode, resp.Header, resp.Body)
-        return resp, nil
+        bodyBytes, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            log.Printf("Error reading response body: %v", err)
+        }
+        
+        // Convert the byte array to a string
+        bodyString := string(bodyBytes)
+        
+        // Log the response
+        log.Printf("Response: status=%d, headers=%v, body=%s", resp.StatusCode, resp.Header, bodyString)
+                return resp, nil
     case err := <-errorChan:
         return nil, err
     case <-ctx.Done():
@@ -152,12 +160,7 @@ func performRequest(client *http.Client, req *http.Request) (*http.Response, err
     if err != nil {
         return nil, err
     }
-    // defer resp.Body.Close()  // remove this line to avoid closing the response body here
-    body, err := ioutil.ReadAll(resp.Body)
-    if err != nil {
-        return nil, err
-    }
-    log.Println(string(body))
+
     return resp, nil
 }
 
