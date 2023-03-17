@@ -23,12 +23,12 @@ docker run --network host -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app q
 ### Refresh (might be a few secs)
 docker exec -it queryspray-dev sh ./build.dev.sh; docker container restart queryspray-dev
 
-### Test with curl and throttle-responder (magic uri)
-curl --location --request POST 'http://localhost:8085/spray' \
+### Test with curl and throttle-responder (magic uri, might change)
+curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "method": "POST",
-    "uri": "http://172.17.0.3:5000/throttle",
+    "uri": "http://172.17.0.2:5000/throttle",
     "protocol": "HTTP/1.1",
     "headers": [
         "Content-Type: application/json"
