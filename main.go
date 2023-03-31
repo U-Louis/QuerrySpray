@@ -128,17 +128,7 @@ func performRequestMultipleTimes(client *http.Client, req *http.Request, multipl
     // Wait for the first response or error
     select {
     case resp := <-responseChan:
-        bodyBytes, err := ioutil.ReadAll(resp.Body)
-        if err != nil {
-            log.Printf("Error reading response body: %v", err)
-        }
-        
-        // Convert the byte array to a string
-        bodyString := string(bodyBytes)
-        
-        // Log the response
-        log.Printf("Response: status=%d, headers=%v, body=%s", resp.StatusCode, resp.Header, bodyString)
-                return resp, nil
+        return resp, nil
     case err := <-errorChan:
         return nil, err
     case <-ctx.Done():
