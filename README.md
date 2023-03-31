@@ -50,8 +50,8 @@ Using the app already built in the container
 
 
 ### Docker Build
-```docker build -t queryspray-dist -f dockerfile.dist .```
-Or for amd64 :
+```docker build -t queryspray-dist -f dockerfile.dist .```  
+Or for amd64 :  
 ```docker build --platform linux/amd64 -t queryspray-dist-amd64 -f dockerfile.dist .```
 
 ### Docker Run
