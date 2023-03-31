@@ -17,20 +17,20 @@ Using a volume to hold the app during development. The compilation is done when 
 After a change you may just kill the server head & restart the container. 
 
 ### Docker Build
-docker build -t queryspray-env-dev .
+```docker build -t queryspray-env-dev .```
   
 ### Docker Run
 <!-- The -d & tail will keep the container running -->
-docker run -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null
-docker run --network host -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null
+```docker run -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null```
+```docker run --network host -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null```
   
 
 ### Refresh (might be a few secs)
-docker exec -it queryspray-dev sh ./build.dev.sh; docker container restart queryspray-dev
+```docker exec -it queryspray-dev sh ./build.dev.sh; docker container restart queryspray-dev```
   
 
 ### Test with curl and throttle-responder (magic uri, might change)
-curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
+```curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "method": "POST",
@@ -40,7 +40,7 @@ curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
         "Content-Type: application/json"
     ],
     "body": "{\n    \"throttle\": 1000,\n    \"id\": \"sample_id\"\n}"
-}'
+}'```
   
 
 ## Production Purposes
@@ -48,15 +48,16 @@ Using the app already built in the container
 
 
 ### Docker Build
-docker build -t queryspray-dist -f dockerfile.dist .
-  
+```docker build -t queryspray-dist -f dockerfile.dist .```
+Or for amd64 :
+```docker build --platform linux/amd64 -t queryspray-dist-amd64 -f dockerfile.dist .```
 
 ### Docker Run
-docker run -d --name queryspray-dist -p 8086:8085 -v $(pwd):/app queryspray-dist tail -f /dev/null
+```docker run -d --name queryspray-dist -p 8086:8085 -v $(pwd):/app queryspray-dist tail -f /dev/null```
   
 
 ### Test with curl and throttle-responder (magic uri, might change)
-curl --location --request POST 'http://localhost:8086/spray?multiple=2' \
+```curl --location --request POST 'http://localhost:8086/spray?multiple=2' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "method": "POST",
@@ -66,4 +67,4 @@ curl --location --request POST 'http://localhost:8086/spray?multiple=2' \
         "Content-Type: application/json"
     ],
     "body": "{\n    \"throttle\": 1000,\n    \"id\": \"sample_id\"\n}"
-}'
+}'```
