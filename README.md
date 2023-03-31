@@ -30,7 +30,8 @@ After a change you may just kill the server head & restart the container.
   
 
 ### Test with curl and throttle-responder (magic uri, might change)
-```curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
+```
+curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "method": "POST",
@@ -40,7 +41,8 @@ After a change you may just kill the server head & restart the container.
         "Content-Type: application/json"
     ],
     "body": "{\n    \"throttle\": 1000,\n    \"id\": \"sample_id\"\n}"
-}'```
+}'
+```
   
 
 ## Production Purposes
@@ -54,10 +56,10 @@ Or for amd64 :
 
 ### Docker Run
 ```docker run -d --name queryspray-dist -p 8086:8085 -v $(pwd):/app queryspray-dist tail -f /dev/null```
-  
 
 ### Test with curl and throttle-responder (magic uri, might change)
-```curl --location --request POST 'http://localhost:8086/spray?multiple=2' \
+```
+curl --location --request POST 'http://localhost:8086/spray?multiple=2' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "method": "POST",
@@ -67,4 +69,5 @@ Or for amd64 :
         "Content-Type: application/json"
     ],
     "body": "{\n    \"throttle\": 1000,\n    \"id\": \"sample_id\"\n}"
-}'```
+}'
+```
