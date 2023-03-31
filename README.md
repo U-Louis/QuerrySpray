@@ -50,16 +50,19 @@ Using the app already built in the container
 
 
 ### Docker Build
-```docker build -t queryspray-dist -f dockerfile.dist .```  
+```docker build -t queryspray-dist:1 -f dockerfile.dist .```  
 Or for amd64 :  
-```docker build --platform linux/amd64 -t queryspray-dist-amd64 -f dockerfile.dist .```
+```docker build --platform linux/amd64 -t queryspray-dist-amd64:1 -f dockerfile.dist .```
 
 ### Docker Run
-```docker run -d --name queryspray-dist -p 8086:8085 -v $(pwd):/app queryspray-dist tail -f /dev/null```
+```docker run -d --name queryspray-dist -p 8085:8085 queryspray-dist:1```
+Or for amd64 :  
+```docker run -d --name queryspray-dist -p 8085:8085 queryspray-dist-amd64:1```
+
 
 ### Test with curl and throttle-responder (magic uri, might change)
 ```
-curl --location --request POST 'http://localhost:8086/spray?multiple=2' \
+curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "method": "POST",
