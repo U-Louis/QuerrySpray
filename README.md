@@ -53,9 +53,9 @@ curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 
 ## Production Purposes
 We will use the go app already built in the container. It will reduce the image size to around 15mo.  
-Note that the binary `main` have to be compiled differently for different architectures.  
+Note that the binary `main` have to be compiled differently for different architectures (the default one here is a mac arm64).  
 To do so :  
-- see build.dev.sh and uncomment the architecture you want  
+- see build.dev.sh and uncomment/put the architecture you want  
 - run the dev image (it will compile the binary `main`)  
 - copy the `main` into the dist folder  
 - then run the dist image with the according --platform.  
