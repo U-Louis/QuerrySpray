@@ -1,5 +1,6 @@
 # QuerySpray
- Duplicate requests, get the fastest.    
+ Duplicate requests, get the fastest.  
+ QuerySpray is a light app containing a gin server. You send it a request, it sends it multiple times and returns you only the fastest one as soon as it gets it.
  This project was created by non go developers. Help and improvement are welcome !
   
 
@@ -17,19 +18,25 @@ Using a volume to hold the app during development. The compilation is done when 
 After a change you may just kill the server head & restart the container. 
 
 ### Docker Build
-```docker build -t queryspray-env-dev .```
+```
+docker build -t queryspray:dev .
+```
   
 ### Docker Run
 <!-- The -d & tail will keep the container running -->
-```docker run -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null```
-```docker run --network host -d --name queryspray-dev -p 8085:8085 -v $(pwd):/app queryspray-env-dev tail -f /dev/null```
+```
+docker run -d -p 8085:8085 -v $(pwd):/app queryspray:dev tail -f /dev/null
+```
+```
+docker run --network host -d -p 8085:8085 -v $(pwd):/app queryspray:dev tail -f /dev/null
+```
   
 
 ### Refresh (might be a few secs)
 ```docker exec -it queryspray-dev sh ./build.dev.sh; docker container restart queryspray-dev```
   
 
-### Test with curl and throttle-responder (magic uri, might change)
+### Test with curl (and with throttle-responder here)
 ```
 curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 --header 'Content-Type: application/json' \
@@ -46,21 +53,37 @@ curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
   
 
 ## Production Purposes
-Using the app already built in the container
+We will use the go app already built in the container. It will reduce the image size to around 15mo.  
+Note that the binary `main` have to be compiled differently for different architectures.  
+To do so :  
+- see build.dev.sh and uncomment the architecture you want  
+- run the dev image (it will compile the binary `main`)  
+- copy the `main` into the dist folder  
+- then run the dist image with the according --platform.  
 
 
 ### Docker Build
-```docker build -t queryspray-dist:1 -f dockerfile.dist .```  
-Or for amd64 :  
-```docker build --platform linux/amd64 -t queryspray-dist-amd64:1 -f dockerfile.dist .```
+```
+docker build -t queryspray:dist-v1 -f dockerfile.arm64.dist .
+```  
+for linux amd64 :  
+```
+cd dist amd64
+docker build --platform linux/amd64 -t queryspray:dist-amd64-v1 -f dockerfile.amd64.dist .
+```
 
 ### Docker Run
-```docker run -d --name queryspray-dist -p 8085:8085 queryspray-dist:1```
-Or for amd64 :  
-```docker run -d --name queryspray-dist -p 8085:8085 queryspray-dist-amd64:1```
+For mac arm64 :
+```
+docker run -d --name queryspray -p 8085:8085 queryspray:dist-v1
+```
+for linux amd64 :  
+```
+docker run -d --name queryspray -p 8085:8085 queryspray:dist-amd64-v1
+```
 
 
-### Test with curl and throttle-responder (magic uri, might change)
+### Test with curl (and with throttle-responder here)
 ```
 curl --location --request POST 'http://localhost:8085/spray?multiple=2' \
 --header 'Content-Type: application/json' \

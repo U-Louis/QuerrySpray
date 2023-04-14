@@ -1,0 +1,9 @@
+FROM alpine:3.16
+
+WORKDIR /app
+
+COPY main .
+EXPOSE 8085
+
+ENTRYPOINT ["./main"]
+
