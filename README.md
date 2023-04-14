@@ -14,8 +14,7 @@ Be sure to perform tests to chose which multiple is most efficient for your proj
 Be sure to check if there are any limitations on the API you are consuming.
   
 ## Development purposes
-Using a volume to hold the app during development. The compilation is done when launching the docker run.
-After a change you may just kill the server head & restart the container. 
+Using a volume to hold the app during development. The compilation is done when launching the docker run.  
 
 ### Docker Build
 ```
