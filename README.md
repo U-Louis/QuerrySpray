@@ -63,7 +63,7 @@ To do so :
 
 ### Docker Build
 ```
-docker build -t queryspray:dist-v1 -f dockerfile.arm64.dist .
+docker build -t queryspray:dist-arm64-v1 -f dockerfile.arm64.dist .
 ```  
 for linux amd64 :  
 ```
@@ -74,7 +74,7 @@ docker build --platform linux/amd64 -t queryspray:dist-amd64-v1 -f dockerfile.am
 ### Docker Run
 For mac arm64 :
 ```
-docker run -d --name queryspray -p 8085:8085 queryspray:dist-v1
+docker run -d --name queryspray -p 8085:8085 queryspray:dist-arm64-v1
 ```
 for linux amd64 :  
 ```
