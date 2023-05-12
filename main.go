@@ -76,18 +76,26 @@ func main() {
             return
         }
 
-// Return the first response received
-body, err := ioutil.ReadAll(resp.Body)
-if err != nil {
-    // log error and request
-    log.Printf("Error: %s | Request: %v\n", err.Error(), req)
-    c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-    return
-}
-defer resp.Body.Close() // close the response body here
+        // Return the first response received
+        body, err := ioutil.ReadAll(resp.Body)
+        if err != nil {
+            // log error and request
+            log.Printf("Error: %s | Request: %v\n", err.Error(), req)
+            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+            return
+        }
+        defer resp.Body.Close() // close the response body here
 
-c.Data(http.StatusOK, "application/json", body)
-
+        // Get the headers
+        headers := resp.Header
+        // Set the headers in the response
+        for key, values := range headers {
+            for _, value := range values {
+                c.Header(key, value)
+            }
+        }
+        
+        c.Data(http.StatusOK, "application/json", body)
     })
 
     r.Run(":8085")
