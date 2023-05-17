@@ -16,11 +16,12 @@ import (
 )
 
 type Sprayable struct {
-    Method   string   `json:"method"`
-    Uri      string   `json:"uri"`
-    Protocol string   `json:"protocol"`
-    Headers  []string `json:"headers"`
-    Body     string   `json:"body"`
+    Method       string   `json:"method"`
+    Uri          string   `json:"uri"`
+    Protocol     string   `json:"protocol"`
+    Headers      []string `json:"headers"`
+    Body         string   `json:"body"`
+    ResponseType string   `json:"responseType"`
 }
 
 func main() {
@@ -86,6 +87,9 @@ func main() {
         }
         defer resp.Body.Close() // close the response body here
 
+        // Set the response type
+        c.Header("Content-Type", sprayable.ResponseType)
+
         // Get the headers
         headers := resp.Header
         // Set the headers in the response
@@ -95,7 +99,7 @@ func main() {
             }
         }
         
-        c.Data(http.StatusOK, "application/json", body)
+        c.Data(http.StatusOK, sprayable.ResponseType, body)
     })
 
     r.Run(":8085")
